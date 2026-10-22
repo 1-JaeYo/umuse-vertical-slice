@@ -1,0 +1,210 @@
+  /* uMuse results design: one dark black-and-emerald theme with smoked-glass panels (CLAUDE.md).
+     Shared by the app (web/static) and the standalone export (template.html via build.py).
+     Large type for a compressed video call. Results are not interactive: no hover states here. */
+  :root {
+    color-scheme: dark;
+    /* surfaces, darkest to lightest */
+    --bg-0: #0e0d0b;            /* page */
+    --bg-1: #16140f;            /* page, lower layer */
+    --surface: #1b1915;         /* opaque panel fallback */
+    --glass: rgba(29, 26, 22, 0.78);
+    --glass-raised: rgba(41, 37, 31, 0.82);
+    --raised: #26231e;
+    /* text */
+    --ivory: #efe7d8;
+    --ink-2: #c3b9a8;           /* secondary text */
+    --ink-3: #a59b8a;           /* tertiary: captions on raised surfaces */
+    /* emerald: dark emerald for fills, lines and the primary action; a lighter emerald for
+       text accents, so small text stays readable on near-black (5.8:1 on the panels) */
+    --accent: #3fae84;          /* emphasis text: numerals, figures, wordmark */
+    --accent-deep: #0f5c45;     /* dark emerald: primary button, fine borders */
+    --accent-hover: #126b51;
+    --accent-wash: rgba(63, 174, 132, 0.10);
+    --accent-line: rgba(63, 174, 132, 0.30);
+    /* lines and states */
+    --hairline: rgba(239, 231, 216, 0.10);
+    --hairline-strong: rgba(239, 231, 216, 0.18);
+    --caution: #e3b98a;         /* uncertainty notes: sand, distinct from emerald emphasis */
+    --caution-wash: rgba(227, 185, 138, 0.08);
+    --error: #f0a594;
+    --error-wash: rgba(240, 165, 148, 0.10);
+    /* chord blocks: major solid, minor dashed (the pattern carries the meaning, not only the tone) */
+    --major-fill: #173328;
+    --minor-fill: #262a2c;
+    --part-a: #2c2821;
+    --part-b: #221f1a;
+    /* shape */
+    --radius-lg: 18px;
+    --radius-md: 12px;
+    --radius-sm: 7px;
+    --shadow: 0 1px 0 rgba(255, 244, 222, 0.05) inset, 0 18px 40px -18px rgba(0, 0, 0, 0.75);
+    --space-1: 6px; --space-2: 12px; --space-3: 20px; --space-4: 32px; --space-5: 48px;
+    /* type: Helvetica Neue for every text, headings and chord numerals included
+       (Ralmone is used only for the app's wordmark and upload headline, in app.css) */
+    --text: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; background: var(--bg-0); }
+  body {
+    margin: 0; color: var(--ivory); cursor: default;
+    font: 20px/1.6 var(--text);
+    /* depth behind the glass: two soft tonal layers, fixed so panels move over them */
+    background:
+      radial-gradient(1200px 700px at 12% -10%, rgba(15, 92, 69, 0.22), transparent 60%),
+      radial-gradient(900px 600px at 95% 20%, rgba(30, 70, 56, 0.16), transparent 65%),
+      linear-gradient(180deg, var(--bg-1), var(--bg-0) 45%);
+    background-attachment: fixed;
+    min-height: 100vh;
+  }
+  main { max-width: 1120px; margin: 0 auto; padding: var(--space-5) 16px 96px; }
+  h1, h2, h3, h4 { font-family: var(--text); font-weight: 500; color: var(--ivory); letter-spacing: -0.01em; }
+  header h1 { font-size: 46px; line-height: 1.12; margin: 0 0 var(--space-1); }
+  header .by { font-size: 24px; color: var(--ink-2); margin: 0 0 2px; }
+  header .meta { color: var(--ink-2); margin: 0 0 var(--space-3); font-variant-numeric: tabular-nums; }
+  header .intro { max-width: 40em; margin: 0; color: var(--ink-2); }
+  h2 { font-size: 32px; line-height: 1.2; margin: 0 0 var(--space-3); }
+  h3 { font-size: 24px; line-height: 1.3; margin: var(--space-4) 0 var(--space-2); }
+  h4 { font-size: 22px; line-height: 1.3; margin: 0 0 2px; }
+  p { margin: 0 0 var(--space-2); max-width: 44em; }
+  .lead { font-size: 24px; line-height: 1.5; }
+  .degrees, .chord, .numeral { font-family: var(--text); font-weight: 500; letter-spacing: 0.01em; }
+  .degrees { color: var(--accent); }
+  .figure { color: var(--accent); font-weight: 700; font-variant-numeric: tabular-nums; }
+  .note { color: var(--ink-2); font-size: 18px; }
+
+  /* smoked-glass panels; an opaque surface where blur is unsupported */
+  section.block {
+    position: relative; margin-top: var(--space-4); padding: var(--space-4) 36px;
+    background: var(--surface); border: 1px solid var(--hairline); border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+  }
+  @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    section.block {
+      background: linear-gradient(180deg, rgba(255, 244, 222, 0.035), rgba(255, 244, 222, 0) 120px), var(--glass);
+      -webkit-backdrop-filter: blur(18px) saturate(115%);
+      backdrop-filter: blur(18px) saturate(115%);
+    }
+  }
+  /* a fine emerald rule on the top edge of each panel: the only ornament */
+  section.block::before {
+    content: ""; position: absolute; left: 36px; right: 36px; top: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-line), transparent);
+  }
+
+  /* uncertainty sits beside its finding, in sand rather than emerald */
+  .hedge {
+    margin: var(--space-3) 0 0; padding: 12px 16px; max-width: 44em;
+    border: 1px dashed rgba(227, 185, 138, 0.45); border-radius: var(--radius-sm);
+    background: var(--caution-wash); color: var(--ivory); font-size: 18px;
+  }
+  .unavailable {
+    margin: 0; padding: 14px 18px; max-width: 44em;
+    border: 1px solid var(--hairline-strong); border-radius: var(--radius-sm);
+    background: rgba(255, 244, 222, 0.03); color: var(--ink-2);
+  }
+  ul.plain { margin: 0 0 var(--space-2); padding-left: 1.2em; max-width: 44em; }
+  ul.plain li { margin-bottom: var(--space-1); }
+  ul.plain li::marker { color: var(--accent); }
+
+  /* ---- chord timeline: rows of ROW_SECONDS; blocks are placed exactly by time ---- */
+  .chord-rows { margin: var(--space-3) 0 var(--space-2); }
+  .chord-row { display: flex; align-items: flex-start; gap: 14px; padding: 6px 0 10px;
+               border-top: 1px solid var(--hairline); }
+  .chord-row:first-child { border-top: 0; }
+  .row-label { width: 104px; flex: none; font-size: 15px; color: var(--ink-2); padding-top: 34px;
+               font-variant-numeric: tabular-nums; }
+  .row-track { position: relative; flex: 1; min-width: 0; }
+  .marks { position: relative; height: 26px; }
+  .blocks { position: relative; height: 46px; }
+  .spill { position: relative; }
+  .chord {
+    position: absolute; top: 0; height: 46px; padding: 0 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; color: var(--ivory); white-space: nowrap; overflow: hidden;
+    border-radius: var(--radius-sm); background: var(--major-fill);
+    border: 1px solid rgba(63, 174, 132, 0.45);
+    box-shadow: 0 0 0 1px var(--bg-0);   /* a dark seam between neighbouring blocks */
+  }
+  .chord.minor { background: var(--minor-fill); border: 1px dashed rgba(239, 231, 216, 0.42); }
+  .chord.none { background: transparent; border: 1px dotted var(--hairline-strong); color: var(--ink-3); }
+  .chord .held { color: var(--ink-3); font-weight: 500; }
+  .spill-label {
+    position: absolute; font-family: var(--text); font-weight: 500; font-size: 17px; color: var(--ivory);
+    white-space: nowrap; line-height: 22px; letter-spacing: 0.02em;
+  }
+  .spill-label.held { color: var(--ink-3); font-weight: 500; }
+  .leader { position: absolute; width: 1px; background: var(--accent-line); }
+  .loop-mark {
+    position: absolute; bottom: 2px; font-size: 14px; line-height: 18px; color: var(--accent);
+    white-space: nowrap; padding-left: 6px; border-left: 2px solid var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+  .loop-mark.flip { padding: 0 6px 0 0; border-left: 0; border-right: 2px solid var(--accent); }
+  .visually-hidden {
+    position: absolute !important; width: 1px; height: 1px; overflow: hidden;
+    clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+  }
+
+  /* ---- section map ---- */
+  .map { position: relative; height: 64px; margin: 40px 0 42px; }
+  .map .part {
+    position: absolute; top: 0; height: 64px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--text); font-weight: 500; font-size: 18px; color: var(--ivory);
+    border-left: 2px solid var(--bg-0);          /* every boundary is a visible seam */
+  }
+  .map .part:first-child { border-radius: var(--radius-sm) 0 0 var(--radius-sm); }
+  .map .part.last { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+  .map .part:nth-child(odd) { background: var(--part-a); }
+  .map .part:nth-child(even) { background: var(--part-b); }
+  .map .read {
+    position: absolute; top: -30px; height: 24px; border-top: 2px solid var(--accent);
+    font-size: 14px; color: var(--accent); padding-top: 3px;
+  }
+  /* returns sit in a lane under the map, so they never cross a part's number */
+  .map .return { position: absolute; top: 66px; height: 14px; border-left: 2px dashed var(--caution); }
+  .map .return::after {   /* a small diamond: repetition reads by shape, not only by colour */
+    content: ""; position: absolute; left: -6px; bottom: -9px; width: 9px; height: 9px;
+    transform: rotate(45deg); border: 1.5px solid var(--caution); background: var(--bg-0);
+  }
+  .parts { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 6px 24px;
+           margin: 0 0 var(--space-3); padding: 0; list-style: none; font-size: 18px; color: var(--ink-2);
+           font-variant-numeric: tabular-nums; }
+  .parts b { display: inline-block; min-width: 1.8em; font-weight: 700; color: var(--accent); }
+
+  /* ---- comparisons: two sources, set apart; matches as a ruled list, not a grid of cards ---- */
+  .corpus {
+    margin-top: var(--space-4); padding: var(--space-3) 28px 8px;
+    border: 1px solid var(--hairline); border-radius: var(--radius-md);
+    background: rgba(255, 244, 222, 0.025);
+  }
+  .corpus h3 { margin-top: 0; }
+  .corpus > .note { max-width: 44em; }
+  .match { padding: var(--space-3) 0; border-top: 1px solid var(--hairline); }
+  .corpus h3 + .note + p + .match, .corpus .match:first-of-type { margin-top: var(--space-2); }
+  .match .who { color: var(--ink-2); margin: 0 0 var(--space-2); }
+  .dim { margin: var(--space-2) 0 0; max-width: 44em; }
+  .dim .label { font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .dim.off .label { color: var(--ink-2); }
+
+  footer { color: var(--ink-2); font-size: 16px; margin-top: var(--space-4); padding: 0 4px; }
+
+  @media (max-width: 720px) {
+    body { font-size: 18px; }
+    main { padding-top: var(--space-4); }
+    header h1 { font-size: 34px; }
+    h2 { font-size: 27px; }
+    h3 { font-size: 21px; }
+    .lead { font-size: 20px; }
+    section.block { padding: 24px 16px; border-radius: var(--radius-md); }
+    section.block::before { left: 16px; right: 16px; }
+    .chord-row { flex-direction: column; align-items: stretch; gap: 2px; }
+    .row-label { width: auto; padding-top: 0; }
+    .chord { font-size: 15px; height: 40px; }
+    .blocks { height: 40px; }
+    .spill-label { font-size: 15px; }
+    .corpus { padding: var(--space-2) 14px 4px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; animation: none !important; }
+  }

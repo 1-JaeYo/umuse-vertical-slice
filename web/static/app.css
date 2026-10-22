@@ -1,0 +1,201 @@
+/* The upload view and its states. Tokens, type and the page background come from reading.css.
+   Only real controls get hover and transition; result panels never do. */
+.app-head { max-width: 760px; margin: 0 auto var(--space-4); }   /* centred in the main column, like the form */
+/* Ralmone (Natha Type), bundled locally, personal-use licence: see fonts/RALMONE-LICENSE.txt.
+   Used for the wordmark and the upload headline only. It is an uppercase-only face. */
+@font-face {
+  font-family: "Ralmone";
+  src: url("/static/fonts/Ralmone-Regular.otf") format("opentype");
+  font-weight: 400; font-style: normal;
+  font-display: block;   /* the alternates have no fallback glyphs: wait for the (local) font rather than show boxes */
+}
+.app-head .wordmark {
+  margin: 0 0 var(--space-2); font-family: "Ralmone", var(--text); font-size: 30px; font-weight: 400;
+  line-height: 1.1; color: var(--accent); letter-spacing: 0.06em;
+}
+/* the upload headline shares the wordmark's face (Ralmone, capitals only) */
+.app-head h1 {
+  font-family: "Ralmone", var(--text); font-weight: 400; font-size: 46px; line-height: 1.12;
+  letter-spacing: 0.03em; margin: 0 0 var(--space-3); max-width: 16em;
+}
+.app-head .intro { max-width: 36em; margin: 0; color: var(--ink-2); font-size: 21px; }
+
+/* the form uses the same glass panel as the results */
+form.block {
+  position: relative; max-width: 760px; margin: 0 auto; padding: var(--space-4) 36px;
+  background: var(--surface); border: 1px solid var(--hairline); border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  form.block {
+    background: linear-gradient(180deg, rgba(255, 244, 222, 0.04), rgba(255, 244, 222, 0) 140px), var(--glass);
+    -webkit-backdrop-filter: blur(18px) saturate(115%);
+    backdrop-filter: blur(18px) saturate(115%);
+  }
+}
+form.block::before {
+  content: ""; position: absolute; left: 36px; right: 36px; top: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-line), transparent);
+}
+[hidden] { display: none !important; }
+fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+/* while analysing: everything reads as paused, but stays legible (no blanket opacity) */
+fieldset:disabled label, fieldset:disabled .help, fieldset:disabled .chosen,
+fieldset:disabled input { color: var(--ink-3); }
+fieldset:disabled .file-well { border-color: var(--hairline-strong); }
+
+.field { margin-bottom: var(--space-3); }
+.field label { display: block; font-weight: 700; margin-bottom: 4px; color: var(--ivory); }
+.field .optional { font-weight: 400; color: var(--ink-2); }
+.field .help { color: var(--ink-2); font-size: 17px; margin: 0 0 var(--space-2); }
+
+/* file selection: the native input, styled; no drag-and-drop is promised */
+.file-well {
+  padding: 18px 20px; border: 1px dashed var(--accent-line); border-radius: var(--radius-md);
+  background: rgba(14, 13, 11, 0.55);
+  transition: border-color 160ms ease, background-color 160ms ease;
+}
+.file-well:focus-within { border-color: var(--accent); }
+.field input[type="file"] { width: 100%; font: inherit; font-size: 18px; color: var(--ink-2); }
+.file-well { --choose-w: 150px; --choose-h: 46px; }   /* Choose File's box: sketch.js outlines exactly this */
+.field input[type="file"]::file-selector-button {
+  width: var(--choose-w); height: var(--choose-h); padding: 0; text-align: center;
+  margin-right: 16px; font: inherit; font-size: 17px; font-weight: 700;
+  color: var(--accent); background: transparent; border: 1px solid var(--accent-deep); border-radius: 999px;
+  cursor: pointer; transition: background-color 160ms ease, border-color 160ms ease;
+}
+.field input[type="file"]::file-selector-button:hover { background: var(--accent-wash); border-color: var(--accent); }
+.chosen { margin: 10px 0 0; color: var(--ivory); font-size: 17px; overflow-wrap: anywhere; }
+
+/* the optional details stay quiet */
+.optional-field label { font-weight: 500; font-size: 18px; }
+.field input[type="text"] {
+  width: 100%; max-width: 30em; font: inherit; font-size: 18px; padding: 10px 14px; color: var(--ivory);
+  background: rgba(14, 13, 11, 0.6); border: 1px solid var(--hairline-strong); border-radius: var(--radius-sm);
+  transition: border-color 160ms ease;
+}
+.field input[type="text"]:hover { border-color: rgba(239, 231, 216, 0.3); }
+.field input:focus-visible, button:focus-visible,
+.field input[type="file"]:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.field input[type="text"]:focus-visible { border-color: var(--accent); }
+
+.field-error { color: var(--error); font-size: 17px; margin: 8px 0 0; }
+.field-error::before { content: "Error: "; font-weight: 700; }
+.field input[aria-invalid="true"] { border-color: var(--error); }
+.file-well.invalid { border-color: var(--error); }
+
+/* one obvious action: the Analyze button, drawn after the researcher's sketch. The SVG shape
+   (block, streaks, flecks) is decoration; the button itself and its label are real. */
+button.cta {
+  position: relative; display: inline-flex; align-items: center; justify-content: flex-end;
+  width: 300px; height: 52px; margin-top: var(--space-2); padding: 0 0 0 150px;
+  font: inherit; font-weight: 700; font-size: 21px; letter-spacing: 0.01em; color: var(--ivory);
+  background: none; border: 0; border-radius: 0; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.cta-shape { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+/* a fine lighter edge keeps the shape clear against the panel (3:1 for controls). It is drawn
+   under the fill, so only the outer silhouette shows, not the joins between streaks and block. */
+.cta-edge { vector-effect: non-scaling-stroke; fill: none; stroke: rgba(63, 174, 132, 0.75); stroke-width: 2.4; stroke-linejoin: round; }
+.cta-body { fill: var(--accent-deep); transition: fill 160ms ease; }
+.cta-flecks { fill: var(--accent-deep); transition: fill 160ms ease, transform 200ms ease; }
+/* the label shares the wordmark's face (Ralmone, capitals only); the real word is visually hidden */
+.cta-label {
+  position: relative; width: 146px; text-align: center;
+  font-family: "Ralmone", var(--text); font-weight: 400; font-size: 19px; letter-spacing: 0.08em;
+  line-height: 1; padding-top: 2px;
+}
+button.cta:hover .cta-body, button.cta:hover .cta-flecks { fill: var(--accent-hover); }
+button.cta:hover .cta-flecks { transform: translateX(-2px); }   /* the trail drifts a touch */
+button.cta:active .cta-label, button.cta:active .cta-shape { transform: translateY(1px); }
+/* keyboard focus: a ring around the solid block only, not the trail */
+button.cta:focus-visible { outline: none; }
+button.cta:focus-visible::after {
+  content: ""; position: absolute; left: 146px; right: -1px; top: 1px; bottom: 1px;
+  border: 3px solid var(--accent); border-radius: 8px;
+}
+button.cta:disabled { cursor: not-allowed; color: var(--ink-2); }
+button.cta:disabled .cta-body, button.cta:disabled .cta-flecks { fill: #24352e; }
+button.cta:disabled .cta-edge { stroke: rgba(195, 185, 168, 0.35); }
+
+/* honest waiting: one line, no stages, no percentages */
+.status { display: flex; align-items: center; gap: 14px; margin: var(--space-3) 0 0; font-weight: 700; color: var(--ivory); }
+.spinner {
+  width: 20px; height: 20px; flex: none; border-radius: 50%;
+  border: 2px solid rgba(63, 174, 132, 0.25); border-top-color: var(--accent);
+  animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .spinner { animation: none; border-color: var(--accent); }
+}
+
+.error-banner {
+  margin: var(--space-3) 0 0; padding: 16px 20px; border-radius: var(--radius-sm);
+  border: 1px solid rgba(240, 165, 148, 0.5); background: var(--error-wash); color: var(--ivory);
+}
+.error-banner:focus-visible { outline: 3px solid var(--error); outline-offset: 3px; }
+.error-banner strong { display: block; margin-bottom: 4px; color: var(--error); }
+.error-banner p { margin: 0 0 6px; }
+.error-banner ul { margin: 6px 0 0; padding-left: 1.2em; font-size: 16px; color: var(--ink-2); overflow-wrap: anywhere; }
+
+.notice { max-width: 760px; margin: var(--space-3) auto 0; color: var(--ink-2); }
+.results { margin-top: var(--space-5); }
+.results:empty { margin-top: 0; }
+.results > header { padding-top: var(--space-4); border-top: 1px solid var(--accent-line); }
+.results header h1 { font-size: 42px; }
+
+@media (max-width: 720px) {
+  .app-head h1 { font-size: 30px; }
+  .app-head .intro { font-size: 18px; }
+  form.block { padding: 24px 16px; border-radius: var(--radius-md); }
+  form.block::before { left: 16px; right: 16px; }
+  .file-well { padding: 14px; }
+  .results header h1 { font-size: 32px; }
+}
+
+/* ---- hand-drawn outlines (sketch.js), after the researcher's sketch ----------------------
+   Applied only once sketch.js has drawn them (html.sketched); otherwise the straight borders
+   above stay, so nothing is ever left without an edge. */
+.sketch { position: absolute; pointer-events: none; overflow: visible; z-index: 0; }
+.sketch-line { fill: none; stroke-linejoin: round; stroke-linecap: round; transition: stroke 160ms ease, stroke-opacity 160ms ease; }
+.sketch-fill { transition: fill 160ms ease; }
+.sketched form.block { background: transparent; border-color: transparent; box-shadow: none; }
+.sketched form.block::before { display: none; }
+.sketched form.block > :not(.sketch) { position: relative; z-index: 1; }
+.sketched .file-well { background: transparent; border-color: transparent; position: relative; }
+.sketched .file-well > :not(.sketch) { position: relative; z-index: 1; }
+.sketched .field input[type="file"]::file-selector-button { border-color: transparent; background: transparent; }
+.sketched .field input[type="file"]::file-selector-button:hover { background: transparent; }
+
+/* the panel: glass fill in the drawn shape, a solid wobbly edge, a soft shadow */
+.sketch-panel { filter: drop-shadow(0 16px 22px rgba(0, 0, 0, 0.45)); }
+.sketch-panel .sketch-fill { fill: var(--glass); }
+.sketch-panel .sketch-line { stroke: var(--accent); stroke-opacity: 0.6; stroke-width: 1.6; }
+/* the file well: darker fill, dashed wobbly edge */
+.sketch-well .sketch-fill { fill: rgba(14, 13, 11, 0.55); }
+.sketch-well .sketch-line { stroke: var(--accent); stroke-opacity: 0.6; stroke-width: 1.5; stroke-dasharray: 7 7; }
+/* Choose File: a solid wobbly outline */
+.sketch-choose .sketch-fill { fill: transparent; }
+.sketch-choose .sketch-line { stroke: var(--accent); stroke-opacity: 0.85; stroke-width: 1.4; }
+
+/* states, carried by the drawn lines */
+.file-well:focus-within .sketch-well .sketch-line { stroke-opacity: 1; }
+.file-well.choose-hover .sketch-choose .sketch-fill { fill: var(--accent-wash); }
+.file-well.choose-hover .sketch-choose .sketch-line { stroke-opacity: 1; }
+.file-well.invalid .sketch-well .sketch-line { stroke: var(--error); stroke-opacity: 1; }
+fieldset:disabled .sketch-line { stroke: var(--ink-3); stroke-opacity: 0.5; }
+
+/* ---- background wallpaper of hand-drawn music symbols (notes.js), after the researcher's sketch ----
+   Sparse, small, thin and muted greens only a little above the page, so they read as texture and never compete with text.
+   Fixed behind everything; the glass panels blur what passes beneath them. */
+.music-bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.music-bg svg { display: block; }
+.music-bg g { fill: none; stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; }
+.music-bg .fill { fill: currentColor; }
+.music-bg .beam { stroke-width: 5.5; }
+.music-bg ellipse, .music-bg path, .music-bg circle { stroke: currentColor; }
+.music-bg circle.fill { stroke: none; }
+.music-bg .tone1 { color: #142019; }   /* muted: barely green, barely above the page */
+.music-bg .tone2 { color: #17251d; }
+body > main { position: relative; z-index: 1; }

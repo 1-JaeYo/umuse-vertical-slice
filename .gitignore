@@ -1,0 +1,23 @@
+# Participant material never leaves this machine. Real names live in the private
+# vault (~/uMuse-private), outside this folder; these hold analysis by code name.
+raw/
+out/
+data/*.json
+!data/EXAMPLE.schema.json
+*.mp3
+*.wav
+*.m4a
+*.aif
+*.aiff
+*.flac
+reference/
+results/
+tools/vamp/
+
+# system and Python clutter
+.DS_Store
+__pycache__/
+*.pyc
+
+# personal working notes, kept local
+PROMPT.md

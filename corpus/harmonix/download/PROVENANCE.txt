@@ -1,0 +1,3 @@
+source: https://github.com/urinieto/harmonixset commit 64abeb509429e73d74559fb98e621dac866efea1
+archive sha256: da21a6092640b74d26a2ee30abed08ce92a855bf941642f2914d45bcca587148
+downloaded: 2026-10-21
