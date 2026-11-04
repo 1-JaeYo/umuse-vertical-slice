@@ -1,4 +1,20 @@
-# uMuse — round 1: local web app
+# uMuse — vertical slice: local web app, used in round-one sessions
+
+## What the session tests
+
+Round one asks **is this information useful**, not **does this interface work**. An artist who
+uploads a file and watches it process answers both at once, and an error mid-analysis loses the
+session. So the session runs in this order:
+
+1. **Before the session**, the researcher runs the track: upload it (or `scripts/intake.py`), then
+   `python3 scripts/pipeline.py <code>` so `results/<code>.json` is current and passes the check.
+2. **The session opens on http://127.0.0.1:8765/reading/<code>**: the reading is already on screen
+   (the stored results, checked again on load) and the artist reads it aloud. Nothing runs live.
+3. **The upload is at the end of the page**, after the reading. Use it only if the session also
+   watches the artist upload a track; a failure there no longer costs the content findings.
+
+Keep the two questions apart in the notes: comments on what the findings mean belong to step 2,
+comments on the upload belong to step 3.
 
 ## What this repo is
 
@@ -254,11 +270,12 @@ corpus/harmonix/              Harmonix Set metadata, segments, beats (MIT; commi
 scripts/pipeline.py           one vault track -> the whole local analysis -> results/<code>.json, checked
 scripts/check.py              the data check; pipeline.py and build.py run it every time
 scripts/build.py              static reference page: checks the JSON, inlines it and the shared design
-web/app.py                    the local web app (Flask): upload -> intake -> pipeline -> JSON
+web/app.py                    the local web app (Flask): upload -> intake -> pipeline -> JSON; /reading/<code> shows a stored result
 web/static/                   index.html, app.js/app.css (upload form), reading.js/reading.css (results design)
 results/<code>.json           the app's analysis, Chordino chords (git-ignored)
 COPY.md                       page copy with the JSON field behind every line
 scripts/evaluate.py           scores parts, chords and key against a by-ear transcription (reference/<code>.truth.json)
+reference/<code>.truth.json   the by-ear transcription evaluate.py scores against (template: evaluate.py --template <code>)
 ```
 
 Pipeline order (the app runs it in one request; `python3 scripts/pipeline.py <code>` runs it by hand):

@@ -64,6 +64,18 @@ python3 web/app.py
 Open http://127.0.0.1:8765. The app listens on this computer only. It accepts MP3, WAV, AIFF,
 FLAC and M4A files up to 200 MB, and runs one analysis at a time.
 
+### In a user session
+
+Run the artist's track beforehand, then open the reading directly, so nothing has to run live:
+
+```sh
+python3 scripts/pipeline.py p01          # analyse (the track must already be in the vault)
+open http://127.0.0.1:8765/reading/p01   # the reading on screen at once, the upload after it
+```
+
+The session tests whether the findings are useful first; the upload comes last, if at all.
+See "What the session tests" in [`CLAUDE.md`](CLAUDE.md).
+
 ## Privacy
 
 Artists are known only by a code (`p01`, `p02`, …). Uploaded audio is copied into a private vault

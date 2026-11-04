@@ -9,7 +9,7 @@
   font-weight: 400; font-style: normal;
   font-display: block;   /* the alternates have no fallback glyphs: wait for the (local) font rather than show boxes */
 }
-.app-head .wordmark {
+.wordmark {
   margin: 0 0 var(--space-2); font-family: "Ralmone", var(--text); font-size: 30px; font-weight: 400;
   line-height: 1.1; color: var(--accent); letter-spacing: 0.06em;
 }
@@ -199,3 +199,9 @@ fieldset:disabled .sketch-line { stroke: var(--ink-3); stroke-opacity: 0.5; }
 .music-bg .tone1 { color: #142019; }   /* muted: barely green, barely above the page */
 .music-bg .tone2 { color: #17251d; }
 body > main { position: relative; z-index: 1; }
+
+/* ---- session page (/reading/<code>): the reading first, the upload after it ---- */
+.session .wordmark { max-width: 1120px; margin: 0 auto var(--space-4); }
+.session .results { margin-top: 0; }
+.session .results > header { padding-top: 0; border-top: 0; }
+.session .app-head { margin-top: var(--space-5); padding-top: var(--space-5); border-top: 1px solid var(--accent-line); }

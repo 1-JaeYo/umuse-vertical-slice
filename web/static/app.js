@@ -106,4 +106,38 @@
       setBusy(false);
     }
   });
+
+  // Session page (/reading/<code>): the track was analysed beforehand, so the reading is shown at
+  // once and the upload moves after it. The artist reads the content first; the interface, if it is
+  // tested at all, comes last, and nothing has to run live before they see their song.
+  const session = location.pathname.match(/^\/reading\/(p\d{2,})\/?$/);
+  if (session) {
+    const head = document.querySelector(".app-head");
+    const wordmark = head.querySelector(".wordmark");
+    document.body.classList.add("session");
+    head.before(wordmark, page);   // wordmark, then the reading, then the upload view as before
+    fetch(`/results/${session[1]}`)
+      .then(r => r.json().catch(() => null).then(payload => ({ ok: r.ok, status: r.status, payload })))
+      .then(({ ok, status, payload }) => {
+        if (!ok || !payload || payload.error) {
+          const err = payload && payload.error ? payload.error :
+            { message: `The app answered with an error (${status}).`, action: "Check the terminal running the app." };
+          const box = document.createElement("div");
+          box.className = "error-banner";
+          box.setAttribute("role", "alert");
+          page.replaceChildren(box);
+          const strong = document.createElement("strong");
+          strong.textContent = err.message;
+          const action = document.createElement("p");
+          action.textContent = err.action;
+          box.append(strong, action);
+          for (const d of err.details || []) { const p = document.createElement("p"); p.textContent = d; box.append(p); }
+          return;
+        }
+        renderReading(payload.data, payload.identity, page);
+      })
+      .catch(() => {
+        page.textContent = "The app didn't respond. Check that the terminal running it is still open, then reload.";
+      });
+  }
 })();

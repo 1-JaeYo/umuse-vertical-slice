@@ -9,7 +9,12 @@ One request does the whole job: the upload is copied into the private vault unde
 participant code (scripts/intake.py), then scripts/pipeline.py runs the analysis,
 structure and comparisons and the data check. Results that fail the check are
 never shown. One track is analysed at a time.
+
+For a user session, run the track beforehand (python3 scripts/pipeline.py p01) and open
+http://127.0.0.1:8765/reading/p01: the reading is on screen at once, and the upload comes
+after it, so the content is tested before the interface and nothing has to run live.
 """
+import json
 import sys
 import tempfile
 import threading
@@ -22,6 +27,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 import vault  # noqa: E402
 from intake import file_in_vault  # noqa: E402
+from check import check  # noqa: E402
 from pipeline import PipelineError, readable, run  # noqa: E402
 
 STATIC = Path(__file__).resolve().parent / "static"
@@ -42,6 +48,33 @@ def problem(status, message, action, details=None):
 @app.get("/")
 def index():
     return send_from_directory(STATIC, "index.html")
+
+
+@app.get("/reading/<code>")
+def reading_page(code):
+    """The session page: a track analysed beforehand, shown at once, with the upload after it."""
+    return send_from_directory(STATIC, "index.html")
+
+
+@app.get("/results/<code>")
+def stored_reading(code):
+    """A stored analysis (results/<code>.json), checked again before it is shown."""
+    if not vault.CODE.match(code):
+        return problem(404, f"“{code}” isn't a participant code.", "Use a code such as p01.")
+    path = ROOT / "results" / f"{code}.json"
+    if not path.exists():
+        return problem(404, f"There is no analysis for {code} yet.",
+                       f"Run it before the session: python3 scripts/pipeline.py {code}")
+    data = json.loads(path.read_text())
+    problems = check(data)
+    if problems:
+        return problem(422, f"The stored analysis for {code} fails the data check, so it isn't shown.",
+                       f"Run it again before the session: python3 scripts/pipeline.py {code}", problems[:20])
+    try:
+        identity = vault.identity(code)
+    except KeyError:
+        return problem(404, f"{code} isn't in the private vault.", "Check the code, or add the track first.")
+    return jsonify(code=code, existing=False, data=data, identity=identity)
 
 
 @app.post("/analyze")
