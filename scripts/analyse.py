@@ -53,13 +53,13 @@ BEAT_CONFIDENCE_SCALE_MAX = 5.32
 PRIMARY_KEY_PROFILE = "bgate"  # KeyExtractor's default, as used by Foundations
 OTHER_KEY_PROFILES = ["edma", "temperley"]
 CHORD_DETECTORS = {
-    "chordino": "Chordino (NNLS-Chroma Vamp plugin, Mauch & Dixon 2010), run on this computer",
+    "chordino": "Chordino (NNLS-Chroma Vamp plugin, Mauch & Dixon 2010), run by uMuse",
     "foundations": "ChordsDetection via TonalExtractor (2 s smoothing window), as in Foundations",
     "beats": "ChordsDetectionBeats, one chord per beat from TonalExtractor chroma (experimental in Essentia)",
 }
 DEFAULT_DETECTOR = "chordino"
 # Built from source for this machine; see tools/vamp/PROVENANCE.txt.
-VAMP_DIR = Path(__file__).resolve().parent.parent / "tools" / "vamp"
+VAMP_DIR = Path(os.environ.get("UMUSE_VAMP_DIR", Path(__file__).resolve().parent.parent / "tools" / "vamp"))
 CHORDINO = "nnls-chroma:chordino:simplechord"
 
 
@@ -84,7 +84,8 @@ def chords_by_chordino(audio):
     "C/E"); convert.read_label turns them into degrees without dropping any of that.
     """
     host = VAMP_DIR / "vamp-simple-host"
-    if not host.exists() or not (VAMP_DIR / "plugins" / "nnls-chroma.dylib").exists():
+    plugin = "nnls-chroma.dylib" if sys.platform == "darwin" else "nnls-chroma.so"
+    if not host.exists() or not (VAMP_DIR / "plugins" / plugin).exists():
         raise RuntimeError(f"Chordino is not built; see {VAMP_DIR / 'PROVENANCE.txt'}")
     with tempfile.TemporaryDirectory() as tmp:
         wav, out = Path(tmp) / "audio.wav", Path(tmp) / "chords.txt"

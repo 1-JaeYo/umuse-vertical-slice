@@ -23,6 +23,7 @@ from pathlib import Path
 
 import vault
 from analyse import CHORD_DETECTORS, DEFAULT_DETECTOR, analyse
+from storage import RAW
 
 PROJECT = Path(__file__).resolve().parent.parent
 
@@ -97,10 +98,10 @@ def main() -> int:
     print(f"{source.name} is already in the vault as {code}" if existing else f"{source.name} -> {code}")
 
     raw = analyse(audio, code, args.chords, args.notes)
-    out = PROJECT / "raw" / f"{code}.raw.json"
-    out.parent.mkdir(exist_ok=True)
+    out = RAW / f"{code}.raw.json"
+    out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(raw) + "\n")
-    print(f"wrote {out.relative_to(PROJECT)}")
+    print(f"wrote {out}")
     print("next:")
     print(f"  python scripts/convert.py raw/{code}.raw.json data/{code}.json --show-chords")
     print(f"  python scripts/structure.py raw/{code}.raw.json data/{code}.json")

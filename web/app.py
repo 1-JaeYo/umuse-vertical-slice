@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""uMuse local web app: upload a track, analyse it on this computer, show the reading.
+"""uMuse web app: upload a track, run the pipeline, show the reading.
 
     python3 web/app.py
 
-Then open http://127.0.0.1:8765. It listens on this computer only.
+Local mode listens on http://127.0.0.1:8765. The Docker image runs hosted mode
+behind Gunicorn with mandatory researcher sign-in and persistent storage.
 
 One request does the whole job: the upload is copied into the private vault under a
 participant code (scripts/intake.py), then scripts/pipeline.py runs the analysis,
@@ -15,12 +16,15 @@ http://127.0.0.1:8765/reading/p01: the reading is on screen at once, and the upl
 after it, so the content is tested before the interface and nothing has to run live.
 """
 import json
+import hmac
+import os
 import sys
 import tempfile
 import threading
 from pathlib import Path
 
-from flask import Flask, jsonify, request, send_from_directory
+from flask import Flask, jsonify, request, Response
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
@@ -29,14 +33,27 @@ import vault  # noqa: E402
 from intake import file_in_vault  # noqa: E402
 from check import check  # noqa: E402
 from pipeline import PipelineError, readable, run  # noqa: E402
+from storage import RESULTS  # noqa: E402
 
 STATIC = Path(__file__).resolve().parent / "static"
 ALLOWED = {".mp3", ".wav", ".aif", ".aiff", ".flac", ".m4a"}
 MAX_MB = 200
 HOST, PORT = "127.0.0.1", 8765
+HOSTED = os.environ.get("UMUSE_HOSTED") == "1"
+USERNAME = os.environ.get("UMUSE_USERNAME", "")
+PASSWORD = os.environ.get("UMUSE_PASSWORD", "")
+if HOSTED and (not USERNAME or len(PASSWORD) < 24):
+    raise RuntimeError("Hosted uMuse requires UMUSE_USERNAME and UMUSE_PASSWORD (at least 24 characters).")
+if bool(USERNAME) != bool(PASSWORD):
+    raise RuntimeError("Set both UMUSE_USERNAME and UMUSE_PASSWORD, or neither for local-only use.")
+if HOSTED and (not os.environ.get("UMUSE_DATA_DIR") or not os.environ.get("UMUSE_VAULT")):
+    raise RuntimeError("Hosted uMuse requires explicit persistent UMUSE_DATA_DIR and UMUSE_VAULT paths.")
 
 app = Flask(__name__, static_folder=str(STATIC), static_url_path="/static")
 app.config["MAX_CONTENT_LENGTH"] = MAX_MB * 1024 * 1024
+if HOSTED:
+    # Railway terminates HTTPS at its proxy. Do not trust a forwarded host.
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=0, x_proto=1, x_host=0)
 busy = threading.Lock()
 
 
@@ -45,15 +62,62 @@ def problem(status, message, action, details=None):
     return jsonify(error={"message": message, "action": action, "details": details or []}), status
 
 
+@app.before_request
+def protect_readings():
+    if request.path == "/healthz" and request.method in {"GET", "HEAD"}:
+        return None
+    if USERNAME:
+        auth = request.authorization
+        if not (auth and auth.type == "basic"
+                and hmac.compare_digest((auth.username or "").encode(), USERNAME.encode())
+                and hmac.compare_digest((auth.password or "").encode(), PASSWORD.encode())):
+            return Response("Sign in to this private uMuse research app.", 401,
+                            {"WWW-Authenticate": 'Basic realm="uMuse", charset="UTF-8"'})
+    if request.method == "POST":
+        # Browser Basic credentials are ambient: reject cross-site form submissions.
+        origin = request.headers.get("Origin")
+        if (origin and origin != request.host_url.rstrip("/")) or request.headers.get("Sec-Fetch-Site") == "cross-site":
+            return problem(403, "This upload came from a different website.", "Upload from the uMuse page directly.")
+
+
+@app.after_request
+def privacy_headers(response):
+    response.headers["Cache-Control"] = "no-store"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Referrer-Policy"] = "no-referrer"
+    response.headers["X-Robots-Tag"] = "noindex, nofollow, noarchive"
+    response.headers["Content-Security-Policy"] = (
+        "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; "
+        "font-src 'self'; img-src 'self' data:; connect-src 'self'; "
+        "object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'")
+    if HOSTED:
+        response.headers["Strict-Transport-Security"] = "max-age=31536000"
+    return response
+
+
+@app.get("/healthz")
+def health():
+    return jsonify(status="ok")
+
+
+def app_shell():
+    html = (STATIC / "index.html").read_text()
+    description = ("The file is uploaded to this private uMuse server for analysis. Only upload music "
+                   "you have permission to process here. " if HOSTED else "The analysis runs on this computer: ")
+    return Response(html.replace("<!-- __UMUSE_PROCESSING_LOCATION__ -->", description), mimetype="text/html")
+
+
 @app.get("/")
+@app.get("/static/index.html")
 def index():
-    return send_from_directory(STATIC, "index.html")
+    return app_shell()
 
 
 @app.get("/reading/<code>")
 def reading_page(code):
     """The session page: a track analysed beforehand, shown at once, with the upload after it."""
-    return send_from_directory(STATIC, "index.html")
+    return app_shell()
 
 
 @app.get("/results/<code>")
@@ -61,7 +125,7 @@ def stored_reading(code):
     """A stored analysis (results/<code>.json), checked again before it is shown."""
     if not vault.CODE.match(code):
         return problem(404, f"“{code}” isn't a participant code.", "Use a code such as p01.")
-    path = ROOT / "results" / f"{code}.json"
+    path = RESULTS / f"{code}.json"
     if not path.exists():
         return problem(404, f"There is no analysis for {code} yet.",
                        f"Run it before the session: python3 scripts/pipeline.py {code}")
@@ -109,12 +173,15 @@ def analyze():
     except PipelineError as e:
         return problem(422, f"The analysis stopped at this step: {e.step}.",
                        "If the file plays normally, try exporting it again as WAV or MP3 and analysing that.",
-                       [str(e.detail)])
+                       [] if HOSTED else [str(e.detail)])
     except Exception as e:  # anything unexpected: say so plainly and keep the app running
-        app.logger.exception("analysis failed")
-        return problem(500, "Something went wrong on this computer while analysing the track.",
-                       "Try again. If it happens again, the details below and the terminal running the app say more.",
-                       [f"{type(e).__name__}: {e}"])
+        if HOSTED:
+            app.logger.error("Analysis failed (%s); participant details omitted", type(e).__name__)
+        else:
+            app.logger.exception("analysis failed")
+        return problem(500, "Something went wrong while analysing the track.",
+                       "Try again. If it happens again, contact the researcher.",
+                       [] if HOSTED else [f"{type(e).__name__}: {e}"])
     finally:
         busy.release()
 

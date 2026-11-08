@@ -21,3 +21,10 @@ __pycache__/
 
 # personal working notes, kept local
 PROMPT.md
+
+# Hosting credentials and local deployment state
+.env
+.env.*
+!.env.example
+.railway/
+.venv/

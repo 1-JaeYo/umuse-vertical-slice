@@ -1,6 +1,6 @@
 # uMuse — vertical slice
 
-A local web app that reads the harmony and structure of a song, for independent artists who write
+A Flask web app that reads the harmony and structure of a song, for independent artists who write
 and record their own music. Choose a track, click Analyze, and the page shows:
 
 - **Harmony**: the key (and when the analysis can't tell it from its relative minor), the chords as
@@ -12,8 +12,8 @@ and record their own music. Choose a track, click Analyze, and the page shows:
   structure) and Harmonix (structure only). Every score comes with the evidence behind it,
   with timestamps in both songs.
 
-Melody is shown as not available yet. Everything runs on this computer; nothing is sent to any
-outside service.
+Melody is shown as not available yet. Local mode runs on this computer. The optional private
+Railway deployment runs the same pipeline on the server; it calls no external analysis service.
 
 Built for Minerva CP193 (capstone), round one of user testing. The rules the app follows, above
 all **never invent a value**, are in [`CLAUDE.md`](CLAUDE.md). The page copy and the data field
@@ -84,7 +84,8 @@ linked to a name. The original file is never changed.
 
 The audio, the vault and every analysis output (`raw/`, `results/`, `data/*.json`, `out/`,
 `reference/`) are git-ignored. Pages the app shows carry the artist's real song title, so they stay
-on this machine.
+local unless consent covers private hosted processing. Hosted pages require the researcher’s sign-in.
+Do not copy the existing participant vault into a deployment.
 
 ## How the analysis works
 
@@ -132,7 +133,24 @@ template.html         static reference page shell
 
 - **McGill Billboard 2.0** annotations: CC0.
 - **Harmonix Set**: MIT (commit `64abeb5`; checksums in `corpus/harmonix/download/PROVENANCE.txt`).
-- **Chordino / NNLS-Chroma**: GPL-2.0. Built locally and not distributed in this repo.
+- **Chordino / NNLS-Chroma**: GPL-2.0. Compiled binaries are not committed. The Docker build
+  compiles Linux binaries from the pinned public source; licence notices stay in the image.
 - **Ralmone** (Natha Type), used for the wordmark, headline and Analyze label: personal-use
   licence (`web/static/fonts/RALMONE-LICENSE.txt`). Any commercial use of uMuse needs a bought
   licence or a different font.
+
+
+## Deploying both frontend and backend
+
+The existing interface and Flask API run together in one Linux Docker service on Railway.
+No separate Vercel deployment, database or analysis vendor is needed. See
+[DEPLOYMENT.md](DEPLOYMENT.md) for the volume, credentials, build and deployment instructions.
+
+```sh
+python3 -m unittest discover -s tests -v
+docker build --platform linux/amd64 -t umuse .
+```
+
+The Docker build uses Python 3.14 and the existing Essentia version, compiles Chordino for Linux
+from the same source revisions, and includes only app code and the public annotation corpora.
+Participant recordings, results, screenshots and research reference files are excluded.

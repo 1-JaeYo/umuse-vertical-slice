@@ -114,7 +114,7 @@ function renderReading(DATA, IDENTITY, page) {
     const src = harmony.chord_source, [from, to] = src.covers_seconds;
     // chords for the whole track (local Essentia) or only a stretch of it (Moises free plan)
     const whole = from <= 0 && to >= DATA.track.duration_seconds - 1;
-    const local = src.tool !== "Moises";  // Essentia or Chordino, both run on this computer
+    const local = src.tool !== "Moises";  // Essentia or Chordino, run by uMuse
     const kr = harmony.key_reading, keyName = `${harmony.key} ${harmony.mode}`;
     const b = el("section", { class: "block" }, el("h2", {}, "The chords that keep coming back"));
 
@@ -219,7 +219,7 @@ function renderReading(DATA, IDENTITY, page) {
     if (kinds.length) b.append(el("p", { class: "note" }, kinds.join(" ")));
     if (src.beyond_coverage) b.append(el("p", {}, src.beyond_coverage));
     b.append(el("p", { class: "hedge" }, local
-      ? `Chord estimates made on this computer by ${src.tool === "Chordino" ? "Chordino" : "the uMuse analysis"}; ` +
+      ? `Chord estimates made by ${src.tool === "Chordino" ? "Chordino" : "the uMuse analysis"}; ` +
         "not checked by ear. A chord change can show up about a second after it happens."
       : `Chord estimates from ${src.tool}; not independently verified. Times are approximate.`));
     return b;
@@ -350,6 +350,6 @@ function renderReading(DATA, IDENTITY, page) {
   page.append(el("footer", {}, src && src.tool !== "Essentia" && src.observed_on
     ? `Chords read from ${src.tool} on ${src.observed_on}. Key, tempo and parts from the uMuse analysis, run ${DATA.track.analysed_on}.`
     : src && src.tool === "Chordino"
-      ? `Chords by Chordino; key, tempo and parts from the uMuse analysis. All run on this computer, ${DATA.track.analysed_on}.`
-      : `Chords, key, tempo and parts from the uMuse analysis on this computer, run ${DATA.track.analysed_on}.`));
+      ? `Chords by Chordino; key, tempo and parts from the uMuse analysis, run ${DATA.track.analysed_on}.`
+      : `Chords, key, tempo and parts from the uMuse analysis, run ${DATA.track.analysed_on}.`));
 }

@@ -4,8 +4,8 @@
     python scripts/pipeline.py p01
 
 analyse.py -> convert.py -> structure.py -> billboard.py -> harmonix.py -> check.py,
-all on this computer. The chords are Essentia's local estimates (chord_source.tool is
-"Essentia"); nothing is sent to Moises or any other service.
+in the uMuse process. Chordino estimates the chords; Essentia supplies key, tempo,
+beats and chroma. Nothing is sent to Moises or any external analysis service.
 
 Writes raw/<code>.raw.json and results/<code>.json. data/<code>.json is left alone:
 that is where the hand-run pipeline (and the Moises reading for p01) lives.
@@ -21,10 +21,9 @@ from analyse import analyse
 from check import check
 from convert import RawError, convert
 from structure import structure
+from storage import RAW, RESULTS
 
 ROOT = Path(__file__).resolve().parent.parent
-RAW = ROOT / "raw"
-RESULTS = ROOT / "results"
 TOP_MATCHES = 5
 
 
@@ -53,7 +52,7 @@ def run(audio, code):
         raw = analyse(audio, code)
     except Exception as e:
         raise PipelineError("Reading the audio", e) from e
-    RAW.mkdir(exist_ok=True)
+    RAW.mkdir(parents=True, exist_ok=True)
     (RAW / f"{code}.raw.json").write_text(json.dumps(raw) + "\n")
     try:
         data, _log, _before = convert(raw)
@@ -70,7 +69,7 @@ def run(audio, code):
     except Exception as e:
         raise PipelineError("Comparing with the song collections", e) from e
     problems = check(data)
-    RESULTS.mkdir(exist_ok=True)
+    RESULTS.mkdir(parents=True, exist_ok=True)
     (RESULTS / f"{code}.json").write_text(json.dumps(data, indent=2) + "\n")
     return data, problems
 

@@ -1,0 +1,24 @@
+# Allowlist only application code and public annotation corpora.
+**
+!Dockerfile
+!requirements.txt
+!gunicorn.conf.py
+!scripts/
+!scripts/*.py
+!web/
+!web/*.py
+!web/static/
+!web/static/**
+!corpus/
+!corpus/**
+**/__pycache__/
+**/.DS_Store
+**/.git/
+# Never package participant media, readings, screenshots or research notes.
+**/*.mp3
+**/*.wav
+**/*.aif
+**/*.aiff
+**/*.flac
+**/*.m4a
+**/participants.json

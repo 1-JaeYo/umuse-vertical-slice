@@ -89,7 +89,7 @@
       if (!response.ok || !payload || payload.error) {
         showError(payload && payload.error ? payload.error : {
           message: `The app answered with an error (${response.status}).`,
-          action: "Try again. If it keeps happening, check the terminal running the app." });
+          action: "Try again. If it keeps happening, contact the researcher." });
         return;
       }
       if (payload.existing) {
@@ -101,7 +101,7 @@
       page.scrollIntoView({ behavior: "smooth", block: "start" });
     } catch (_) {
       showError({ message: "The app didn't respond.",
-                  action: "Check that the terminal running it is still open, then try again." });
+                  action: "Check your connection and try again. If it keeps happening, contact the researcher." });
     } finally {
       setBusy(false);
     }
@@ -121,7 +121,7 @@
       .then(({ ok, status, payload }) => {
         if (!ok || !payload || payload.error) {
           const err = payload && payload.error ? payload.error :
-            { message: `The app answered with an error (${status}).`, action: "Check the terminal running the app." };
+            { message: `The app answered with an error (${status}).`, action: "Contact the researcher." };
           const box = document.createElement("div");
           box.className = "error-banner";
           box.setAttribute("role", "alert");
@@ -137,7 +137,7 @@
         renderReading(payload.data, payload.identity, page);
       })
       .catch(() => {
-        page.textContent = "The app didn't respond. Check that the terminal running it is still open, then reload.";
+        page.textContent = "The app didn't respond. Check your connection and reload. If it keeps happening, contact the researcher.";
       });
   }
 })();

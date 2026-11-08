@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="930" viewBox="0 0 1440 930" role="img" aria-labelledby="title desc">
+<title id="title">uMuse deployment and storage</title>
+<desc id="desc">Existing recordings and the local vault remain on the researcher's laptop. The browser communicates over HTTPS with a Railway container serving the interface and running Flask analysis. The container reads and writes a persistent volume holding hosted audio, the identity mapping, raw analysis and results. There is no automatic transfer from the existing local vault to Railway.</desc>
+<rect width="1440" height="930" fill="white"/>
+<defs><marker id="arrow" viewBox="0 0 12 12" refX="9" refY="6" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path d="M3 1 L9 6 L3 11" fill="none" stroke="#687a72" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+
+<text x="720" y="42" text-anchor="middle" fill="#20372d" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700">
+<tspan x="720" y="42" dominant-baseline="central">uMuse · deployment and storage</tspan>
+</text>
+<rect x="30" y="100" width="330" height="402" rx="26" fill="white" stroke="#8ea89c" stroke-width="1.8" />
+<rect x="400" y="100" width="350" height="402" rx="26" fill="white" stroke="#8ea89c" stroke-width="1.8" />
+<rect x="925" y="100" width="485" height="754" rx="26" fill="white" stroke="#8ea89c" stroke-width="1.8" />
+<text x="195" y="138" text-anchor="middle" fill="#20372d" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700">
+<tspan x="195" y="138" dominant-baseline="central">Researcher’s laptop</tspan>
+</text>
+<text x="575" y="138" text-anchor="middle" fill="#20372d" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700">
+<tspan x="575" y="138" dominant-baseline="central">Browser</tspan>
+</text>
+<text x="1167.5" y="138" text-anchor="middle" fill="#20372d" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700">
+<tspan x="1167.5" y="138" dominant-baseline="central">Railway</tspan>
+</text>
+<rect x="50" y="190" width="290" height="105" rx="26" fill="#181c1a" stroke="#3fae84" stroke-width="1.8" />
+<text x="195" y="226" text-anchor="middle" fill="#f8f8f8" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="700">
+<tspan x="195" y="226" dominant-baseline="central">Existing recordings</tspan>
+</text>
+<text x="195" y="264" text-anchor="middle" fill="#f8f8f8" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400">
+<tspan x="195" y="264" dominant-baseline="central">Original files unchanged</tspan>
+</text>
+<rect x="50" y="332" width="290" height="125" rx="26" fill="#181c1a" stroke="#3fae84" stroke-width="1.8" />
+<text x="195" y="368" text-anchor="middle" fill="#f8f8f8" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="700">
+<tspan x="195" y="368" dominant-baseline="central">Local private vault</tspan>
+</text>
+<text x="195" y="405" text-anchor="middle" fill="#f8f8f8" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400">
+<tspan x="195" y="405" dominant-baseline="central">Audio and identity mapping</tspan>
+</text>
+<rect x="420" y="190" width="310" height="105" rx="26" fill="#181c1a" stroke="#3fae84" stroke-width="1.8" />
+<text x="575" y="225" text-anchor="middle" fill="#f8f8f8" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="700">
+<tspan x="575" y="225" dominant-baseline="central">Researcher sign-in</tspan>
+</text>
+<text x="575" y="263" text-anchor="middle" fill="#f8f8f8" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400">
+<tspan x="575" y="263" dominant-baseline="central">Shared credentials</tspan>
+</text>
+<rect x="420" y="332" width="310" height="125" rx="26" fill="#181c1a" stroke="#3fae84" stroke-width="1.8" />
+<text x="575" y="373" text-anchor="middle" fill="#f8f8f8" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">
+<tspan x="575" y="373" dominant-baseline="central">Select and upload audio</tspan>
+</text>
+<text x="575" y="415" text-anchor="middle" fill="#f8f8f8" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">
+<tspan x="575" y="415" dominant-baseline="central">Read returned results</tspan>
+</text>
+<path d="M750 300 L925 300" fill="none" stroke="#687a72" stroke-width="1.8" marker-end="url(#arrow)"/>
+<path d="M925 398 L750 398" fill="none" stroke="#687a72" stroke-width="1.8" marker-end="url(#arrow)"/>
+<text x="837.5" y="245" text-anchor="middle" fill="#20372d" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="700">
+<tspan x="837.5" y="245" dominant-baseline="central">HTTPS</tspan>
+</text>
+<text x="837.5" y="275" text-anchor="middle" fill="#52675d" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400">
+<tspan x="837.5" y="275" dominant-baseline="central">Upload</tspan>
+</text>
+<text x="837.5" y="427" text-anchor="middle" fill="#52675d" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="400">
+<tspan x="837.5" y="427" dominant-baseline="central">Interface / results</tspan>
+</text>
+<rect x="950" y="190" width="435" height="267" rx="26" fill="#181c1a" stroke="#3fae84" stroke-width="1.8" />
+<text x="1167.5" y="225" text-anchor="middle" fill="#f8f8f8" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="700">
+<tspan x="1167.5" y="225" dominant-baseline="central">One app container</tspan>
+</text>
+<text x="1167.5" y="269" text-anchor="middle" fill="#f8f8f8" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="700">
+<tspan x="1167.5" y="269" dominant-baseline="central">Flask backend</tspan>
+</text>
+<text x="1167.5" y="308" text-anchor="middle" fill="#f8f8f8" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400">
+<tspan x="1167.5" y="308" dominant-baseline="central">Checks sign-in and runs analysis</tspan>
+</text>
+<text x="1167.5" y="365" text-anchor="middle" fill="#f8f8f8" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="700">
+<tspan x="1167.5" y="365" dominant-baseline="central">Frontend files</tspan>
+</text>
+<text x="1167.5" y="405" text-anchor="middle" fill="#f8f8f8" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400">
+<tspan x="1167.5" y="405" dominant-baseline="central">HTML, CSS and JavaScript</tspan>
+</text>
+<path d="M1167.5 470 L1167.5 544" fill="none" stroke="#687a72" stroke-width="1.8" marker-end="url(#arrow)" marker-start="url(#arrow)"/>
+<text x="1268" y="508" text-anchor="middle" fill="#52675d" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400">
+<tspan x="1268" y="508" dominant-baseline="central">Read / write</tspan>
+</text>
+<rect x="950" y="558" width="435" height="245" rx="26" fill="#181c1a" stroke="#3fae84" stroke-width="1.8" />
+<text x="1167.5" y="596" text-anchor="middle" fill="#f8f8f8" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="700">
+<tspan x="1167.5" y="596" dominant-baseline="central">Persistent volume</tspan>
+</text>
+<text x="1167.5" y="640" text-anchor="middle" fill="#f8f8f8" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="400">
+<tspan x="1167.5" y="640" dominant-baseline="central">Hosted audio</tspan>
+</text>
+<text x="1167.5" y="676" text-anchor="middle" fill="#f8f8f8" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="400">
+<tspan x="1167.5" y="676" dominant-baseline="central">Identity mapping</tspan>
+</text>
+<text x="1167.5" y="712" text-anchor="middle" fill="#f8f8f8" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="400">
+<tspan x="1167.5" y="712" dominant-baseline="central">Raw analysis and results</tspan>
+</text>
+<text x="1167.5" y="766" text-anchor="middle" fill="#b7c9bd" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400">
+<tspan x="1167.5" y="766" dominant-baseline="central">Kept across redeployments</tspan>
+</text>
+<rect x="30" y="542" width="330" height="141" rx="26" fill="#1c1b1a" stroke="#d2b383" stroke-width="1.8" stroke-dasharray="4 5"/>
+<text x="195" y="582" text-anchor="middle" fill="#f8f8f8" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">
+<tspan x="195" y="582" dominant-baseline="central">Existing local data</tspan>
+</text>
+<text x="195" y="618" text-anchor="middle" fill="#f8f8f8" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">
+<tspan x="195" y="618" dominant-baseline="central">was not copied</tspan>
+</text>
+<text x="195" y="654" text-anchor="middle" fill="#f8f8f8" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">
+<tspan x="195" y="654" dominant-baseline="central">to Railway.</tspan>
+</text>
+<rect x="400" y="542" width="350" height="168" rx="26" fill="#1c1b1a" stroke="#d2b383" stroke-width="1.8" stroke-dasharray="4 5"/>
+<text x="575" y="581" text-anchor="middle" fill="#f8f8f8" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">
+<tspan x="575" y="581" dominant-baseline="central">Shared researcher access</tspan>
+</text>
+<text x="575" y="627" text-anchor="middle" fill="#f8f8f8" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400">
+<tspan x="575" y="627" dominant-baseline="central">These credentials give access</tspan>
+</text>
+<text x="575" y="658" text-anchor="middle" fill="#f8f8f8" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400">
+<tspan x="575" y="658" dominant-baseline="central">to all hosted readings.</tspan>
+</text>
+<text x="390" y="779" text-anchor="middle" fill="#20372d" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400">
+<tspan x="390" y="779" dominant-baseline="central">New hosted recordings are uploaded through the browser.</tspan>
+</text>
+<text x="390" y="817" text-anchor="middle" fill="#52675d" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400">
+<tspan x="390" y="817" dominant-baseline="central">The existing local vault is not synchronised with Railway.</tspan>
+</text>
+<text x="720" y="897" text-anchor="middle" fill="#52675d" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400">
+<tspan x="720" y="897" dominant-baseline="central">No automatic migration of existing participant recordings.</tspan>
+</text>
+</svg>

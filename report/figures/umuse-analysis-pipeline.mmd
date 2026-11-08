@@ -1,0 +1,17 @@
+flowchart TD
+    A["Upload recording"] --> B["Check file type, size<br/>and whether it can be decoded"]
+    B --> C["Assign participant code<br/>and copy audio into private vault"]
+    C --> D["Analyse recording<br/>Essentia: key, tempo, beats and pitch information<br/>Chordino: chords"]
+    D --> E["Convert chords into scale degrees<br/>and identify recurring progressions"]
+    E --> F["Estimate structure<br/>Section boundaries and returning openings"]
+    F --> G["Compare with annotated songs<br/>Billboard: harmony and structure<br/>Harmonix: structure only"]
+    G --> H{"Do the results pass<br/>the data checks?"}
+    H -->|Yes| I["Display the musical reading"]
+    H -->|No| J["Show an error<br/>Do not display invalid results"]
+
+    classDef step fill:#142b23,stroke:#3fae84,color:#f5f1e8;
+    classDef check fill:#29271f,stroke:#d2b383,color:#f5f1e8;
+    classDef error fill:#352322,stroke:#d49689,color:#f5f1e8;
+    class A,B,C,D,E,F,G,I step;
+    class H check;
+    class J error;

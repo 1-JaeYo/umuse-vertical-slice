@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1158" height="2262" viewBox="0 0 1048 2048" role="img" aria-labelledby="title desc">
+<title id="title">uMuse analysis pipeline</title>
+<desc id="desc">Upload, file checks, participant code and vault, analysis, conversion, structure, comparisons, and validation. Valid results are displayed; invalid results produce an error.</desc>
+<rect width="1048" height="2048" fill="white"/>
+<defs><marker id="arrow" viewBox="0 0 12 12" refX="9" refY="6" markerWidth="9" markerHeight="9" orient="auto"><path d="M3 1 L9 6 L3 11" fill="none" stroke="#858585" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<g fill="none" stroke="#858585" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+
+<path d="M308 123 V181" marker-end="url(#arrow)"/>
+<path d="M308 340 V398" marker-end="url(#arrow)"/>
+<path d="M308 557 V616" marker-end="url(#arrow)"/>
+<path d="M308 802 V860" marker-end="url(#arrow)"/>
+<path d="M308 1046 V1104" marker-end="url(#arrow)"/>
+<path d="M308 1263 V1321" marker-end="url(#arrow)"/>
+<path d="M308 1536 V1594" marker-end="url(#arrow)"/>
+<path d="M247 1845 V1903" marker-end="url(#arrow)"/>
+<path d="M793 1845 V1903" marker-end="url(#arrow)"/>
+<path d="M247 1725 V1798"/>
+<path d="M369 1725 V1746 Q369 1761 384 1761 H778 Q793 1761 793 1776 V1798"/>
+</g>
+<rect x="137" y="14" width="342" height="109" rx="30" fill="#181c1a" stroke="#3fae84" stroke-width="1.7"/>
+<text text-anchor="middle" fill="#f8f8f8" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700">
+<tspan x="308.0" y="68.5" dominant-baseline="central">Upload recording</tspan>
+</text>
+<rect x="111" y="195" width="394" height="145" rx="30" fill="#181c1a" stroke="#3fae84" stroke-width="1.7"/>
+<text text-anchor="middle" fill="#f8f8f8" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700">
+<tspan x="308.0" y="239.5" dominant-baseline="central">Check file type, size</tspan>
+<tspan x="308.0" y="267.5" dominant-baseline="central">and whether it can be</tspan>
+<tspan x="308.0" y="295.5" dominant-baseline="central">decoded</tspan>
+</text>
+<rect x="78" y="412" width="461" height="145" rx="30" fill="#181c1a" stroke="#3fae84" stroke-width="1.7"/>
+<text text-anchor="middle" fill="#f8f8f8" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700">
+<tspan x="308.5" y="456.5" dominant-baseline="central">Assign participant code</tspan>
+<tspan x="308.5" y="484.5" dominant-baseline="central">and copy audio into private</tspan>
+<tspan x="308.5" y="512.5" dominant-baseline="central">vault</tspan>
+</text>
+<rect x="76" y="630" width="465" height="172" rx="30" fill="#181c1a" stroke="#3fae84" stroke-width="1.7"/>
+<text text-anchor="middle" fill="#f8f8f8" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700">
+<tspan x="308.5" y="674.0" dominant-baseline="central">Analyse recording</tspan>
+<tspan x="308.5" y="702.0" dominant-baseline="central">Essentia: key, tempo, beats</tspan>
+<tspan x="308.5" y="730.0" dominant-baseline="central">and pitch information</tspan>
+<tspan x="308.5" y="758.0" dominant-baseline="central">Chordino: chords</tspan>
+</text>
+<rect x="87" y="874" width="442" height="172" rx="30" fill="#181c1a" stroke="#3fae84" stroke-width="1.7"/>
+<text text-anchor="middle" fill="#f8f8f8" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700">
+<tspan x="308.0" y="918.0" dominant-baseline="central">Convert chords into scale</tspan>
+<tspan x="308.0" y="946.0" dominant-baseline="central">degrees</tspan>
+<tspan x="308.0" y="974.0" dominant-baseline="central">and identify recurring</tspan>
+<tspan x="308.0" y="1002.0" dominant-baseline="central">progressions</tspan>
+</text>
+<rect x="98" y="1118" width="420" height="145" rx="30" fill="#181c1a" stroke="#3fae84" stroke-width="1.7"/>
+<text text-anchor="middle" fill="#f8f8f8" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700">
+<tspan x="308.0" y="1162.5" dominant-baseline="central">Estimate structure</tspan>
+<tspan x="308.0" y="1190.5" dominant-baseline="central">Section boundaries and</tspan>
+<tspan x="308.0" y="1218.5" dominant-baseline="central">returning openings</tspan>
+</text>
+<rect x="91" y="1335" width="434" height="201" rx="30" fill="#181c1a" stroke="#3fae84" stroke-width="1.7"/>
+<text text-anchor="middle" fill="#f8f8f8" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700">
+<tspan x="308.0" y="1379.5" dominant-baseline="central">Compare with annotated</tspan>
+<tspan x="308.0" y="1407.5" dominant-baseline="central">songs</tspan>
+<tspan x="308.0" y="1435.5" dominant-baseline="central">Billboard: harmony and</tspan>
+<tspan x="308.0" y="1463.5" dominant-baseline="central">structure</tspan>
+<tspan x="308.0" y="1491.5" dominant-baseline="central">Harmonix: structure only</tspan>
+</text>
+<rect x="125" y="1608" width="367" height="117" rx="30" fill="#1c1b1a" stroke="#d2b383" stroke-width="1.7" stroke-dasharray="3 4"/>
+<text text-anchor="middle" fill="#f8f8f8" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700">
+<tspan x="308.5" y="1652.5" dominant-baseline="central">Do the results pass</tspan>
+<tspan x="308.5" y="1680.5" dominant-baseline="central">the data checks?</tspan>
+</text>
+<rect x="15" y="1917" width="465" height="109" rx="30" fill="#181c1a" stroke="#3fae84" stroke-width="1.7"/>
+<text text-anchor="middle" fill="#f8f8f8" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700">
+<tspan x="247.5" y="1971.5" dominant-baseline="central">Display the musical reading</tspan>
+</text>
+<rect x="553" y="1917" width="480" height="117" rx="30" fill="#211b1a" stroke="#d49689" stroke-width="1.7"/>
+<text text-anchor="middle" fill="#f8f8f8" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700">
+<tspan x="793.0" y="1961.5" dominant-baseline="central">Show an error</tspan>
+<tspan x="793.0" y="1989.5" dominant-baseline="central">Do not display invalid results</tspan>
+</text>
+<rect x="205" y="1798" width="83" height="47" rx="24" fill="#00111c" stroke="#17425d" stroke-width="1.7"/>
+<text x="246.5" y="1821.5" text-anchor="middle" dominant-baseline="central" fill="#9bd0f7" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700">Yes</text>
+<rect x="755" y="1798" width="76" height="47" rx="24" fill="#00111c" stroke="#17425d" stroke-width="1.7"/>
+<text x="793.0" y="1821.5" text-anchor="middle" dominant-baseline="central" fill="#9bd0f7" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700">No</text>
+</svg>

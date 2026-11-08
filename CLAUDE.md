@@ -1,4 +1,4 @@
-# uMuse — vertical slice: local web app, used in round-one sessions
+# uMuse — vertical slice: local and private hosted web app, used in round-one sessions
 
 ## What the session tests
 
@@ -18,7 +18,7 @@ comments on the upload belong to step 3.
 
 ## What this repo is
 
-A **local web app** that shows one artist's real analysis results. Open it in a browser on
+A **Flask web app**, run locally or on a private Railway service, that shows one artist's real analysis results. Open it in a browser on
 this computer, choose a track, click Analyze, and the page shows the reading. It is used on
 screen in a 45-minute user session while the artist reads it aloud and explains what they
 think each line means.
@@ -26,7 +26,9 @@ think each line means.
     python3 web/app.py        # then open http://127.0.0.1:8765
 
 Flask backend (`web/app.py`), plain HTML/CSS/JS frontend (`web/static/`). No React, no accounts,
-no database, no cloud hosting, no task queue. It listens on 127.0.0.1 only.
+no database, no task queue. Local development listens on 127.0.0.1 only. The user has authorized
+Railway hosting for both frontend and backend in one Docker service; see `DEPLOYMENT.md`. Hosted
+mode uses Gunicorn, requires access credentials, and stores participant data on a persistent volume.
 
 The only controls are the upload form and the Analyze button. While a track is being analysed
 the form is disabled and shows "Analyzing your track…" — no percentages and no time estimates.
@@ -46,8 +48,8 @@ Every value on the page comes from the analysis JSON (`results/<code>.json` in t
 pipeline on that artist's track. If a field is missing from the JSON, the page
 says it is missing. It does not fill the gap with a plausible value.
 
-The entire methodological point of this round is that the interface is fake and the content
-is real. A single fabricated number makes the session worthless and I will not know which
+The methodological point of this round is that the findings come from real analysis; the
+working interface is kept separate from the question of whether that information is useful. A single fabricated number makes the session worthless and I will not know which
 finding was contaminated.
 
 `scripts/check.py` runs on every analysis: the app (`scripts/pipeline.py`) and `scripts/build.py`
@@ -61,7 +63,7 @@ in Sprint 1, and they are the reason the product exists. Comparisons against rea
 under both.
 
 - **Harmony** — key, the chords as scale degrees placed on the timeline, the progression that repeats.
-  In the app the chords come from **Chordino, run locally** (see "Where the chords come from").
+  In the app the chords come from **Chordino, run by uMuse** (see "Where the chords come from").
 - **Structure** — where the song's sections start and end, and where earlier material comes
   back. Sections are **not named**. No intro, verse or chorus. "This material returns at 0:48
   and 2:14" is the finding.
@@ -84,22 +86,28 @@ to real name, and the audio itself, live only in the private vault (`~/uMuse-pri
   original filename or lyric goes into them, including `notes`.
 - The app and `build.py --with-names` are the only code that reads names from the vault
   (`vault.identity`). They put the real title on the page, because the artist is looking at their
-  own song. That page identifies the artist: the app stays on 127.0.0.1, and built pages stay on
-  this machine and are never committed, uploaded or published.
+  own song. That page identifies the artist. Locally it stays on 127.0.0.1. Hosted readings and
+  results require authentication; participant codes alone are not access control. Do not move
+  existing recordings or readings to Railway without consent covering hosted processing.
+  Built pages stay on this machine and are never committed, uploaded or published.
 - Never open, read or print `participants.json`, and never copy the vault into this folder.
 - `raw/`, `out/`, `results/`, `data/*.json`, `reference/` and audio files are git-ignored. Keep it that way.
-- The app sends nothing anywhere: no Moises, no external service.
+- Local mode sends nothing anywhere. Hosted uploads go directly from the browser to the private
+  Railway app and its volume; say that before upload. No Moises or external analysis APIs.
+- Docker builds and Railway source uploads must exclude recordings, the vault, generated outputs,
+  reference files, screenshots and credentials. `.dockerignore` and `scripts/deploy.py` enforce
+  an application-and-public-corpus allowlist. A private GitHub repo does not make its content safe
+  to bundle into a deployed image. Screenshots previously approved for the private repo stay there.
 
 ## Where the chords come from
 
-**In the app: Chordino, run on this computer.** `scripts/pipeline.py` runs analyse → convert →
+**In the app: Chordino, run by uMuse in the local or hosted analysis process.** `scripts/pipeline.py` runs analyse → convert →
 structure → billboard → harmonix → check. `analyse.py` gets the chords from Chordino (the NNLS-Chroma
 Vamp plugin, built for this machine in `tools/vamp/`, see `PROVENANCE.txt`); Essentia still supplies
 the key and its confidence, the tempo, the beats and the chroma for the parts of the song.
 `chord_source.tool` is `"Chordino"` and covers the whole track. Chordino labels keep sevenths,
 sixths and slash basses (`detail`, `bass_degree`, the same fields as Moises); it gives no strength,
-so nothing is merged and there is no `chord_filter`. The page says "Chord estimates made on this
-computer by Chordino; not checked by ear." Known limits stay on the record:
+so nothing is merged and there is no `chord_filter`. The page says "Chord estimates made by Chordino; not checked by ear." Known limits stay on the record:
 - On p01, 0:00–1:00, Chordino agreed with the Moises reading about 65% of the time (root and
   major/minor), against 28% for Essentia's Foundations detector. Neither is ground truth.
 - Chordino's changes tend to land about a second after the change.
@@ -216,7 +224,8 @@ guessing a range. Artists should see what they are being matched against.
 ## Technical constraints
 
 - App: Flask plus plain HTML, CSS and JavaScript. No frameworks, no npm, no build step, no
-  external requests (no CDNs, fonts or analytics). One analysis at a time; uploads up to 200 MB
+  external assets or analysis services (no CDNs, fonts or analytics). Hosted mode sends uploads
+  only to the same-origin Railway service. One analysis at a time; uploads up to 200 MB
   in MP3, WAV, AIFF, FLAC or M4A.
 - Static reference page: one self-contained `.html` file, data and the shared design inlined by
   `scripts/build.py`.
@@ -281,3 +290,19 @@ reference/<code>.truth.json   the by-ear transcription evaluate.py scores agains
 Pipeline order (the app runs it in one request; `python3 scripts/pipeline.py <code>` runs it by hand):
 upload or `intake.py` → `analyse.py` → `convert.py` → `structure.py` → `billboard.py` → `harmonix.py` →
 `check.py`. The static reference adds `moises.py` after `structure.py` for p01 and finishes with `build.py`.
+
+## Hosting constraints
+
+- Serve both the existing frontend and backend from one Railway Docker service. Keep the plain
+  HTML/CSS/JS design, pipeline order, session reading order and static export compatibility.
+- `UMUSE_HOSTED=1` requires `UMUSE_USERNAME`, a strong `UMUSE_PASSWORD`, `UMUSE_DATA_DIR` and
+  `UMUSE_VAULT`. All pages, static assets, uploads and readings are protected; `/healthz` is the
+  sole public health response and contains no participant information.
+- Exactly one replica and one Gunicorn worker: the intake and analysis lock is process-local.
+  Threads keep health requests responsive while analysis runs. No queue or database.
+- `/data` is the mounted Railway volume, with raw/, results/ and vault/ beneath it. Never bake
+  participant data or secrets into an image. Local paths and original recordings stay unchanged.
+- Linux builds use the same pinned Chordino/Vamp commits and Essentia version as the local app.
+  Supporting Linux is a packaging change, not evidence of better musical accuracy.
+- The shared researcher sign-in is for supervised research; it does not isolate different artists
+  from each other. Do not advertise this as a public self-service multi-user platform.
